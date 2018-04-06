@@ -18,6 +18,8 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\WebApp whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\WebApp whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\WebApp whereUpdatedAt($value)
+ * @property int $developer_id
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\WebApp whereDeveloperId($value)
  */
 class WebApp extends Model
 {

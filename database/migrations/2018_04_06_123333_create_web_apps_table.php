@@ -17,6 +17,7 @@ class CreateWebAppsTable extends Migration
             $table->increments('id');
             $table->text('name');
             $table->longText('description');
+            $table->integer('developer_id');
             $table->timestamps();
         });
     }
