@@ -20,6 +20,8 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\WebAppVersion whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\WebAppVersion whereVersion($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\WebAppVersion whereWebAppId($value)
+ * @property string $logo_url
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\WebAppVersion whereLogoUrl($value)
  */
 class WebAppVersion extends Model
 {
