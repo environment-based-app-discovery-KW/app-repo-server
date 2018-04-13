@@ -14,3 +14,8 @@
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::group(['prefix' => 'app'], function () {
+    Route::any('ls', 'WebAppController@ls');
+    Route::any('download', 'WebAppController@download');
+});
