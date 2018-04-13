@@ -17,5 +17,6 @@ Route::get('/', function () {
 
 Route::group(['prefix' => 'app'], function () {
     Route::any('ls', 'WebAppController@ls');
+    Route::any('discover', 'WebAppController@discover');
     Route::any('download', 'WebAppController@download');
 });

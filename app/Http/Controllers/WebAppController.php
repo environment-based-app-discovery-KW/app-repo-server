@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\PinnedWebApp;
 use App\WebApp;
 use App\WebAppDependency;
 use App\WebAppHasWebAppDependency;
@@ -36,5 +37,17 @@ class WebAppController extends Controller
             ::whereIn('id', WebAppHasWebAppDependency::whereWebAppVersionId($app_version->id)
                 ->pluck('web_app_dependency_id'))->get(['dependency_name_version as name', 'code_bundle_url']);
         return $webapp;
+    }
+
+    public function discover()
+    {
+        if (env("IS_FULL_MIRROR")) {
+            // a full mirror shows only GpsPosition-related apps
+            // TODO
+        } else {
+            // a partial in-NAT mirror shows only pinned apps
+            $pinned_apps = PinnedWebApp::leftJoin('web_apps', 'web_apps.id', '=', 'web_app_id')->orderBy('pinned_web_apps.priority', 'desc')->get(['web_apps.*']);
+            return $pinned_apps;
+        }
     }
 }
