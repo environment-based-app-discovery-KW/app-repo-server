@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\PinnedWebApp;
 use App\WebApp;
 use App\WebAppDependency;
+use App\WebAppDeploymentLocation;
 use App\WebAppHasWebAppDependency;
 use App\WebAppVersion;
 use Illuminate\Routing\Controller;
@@ -46,7 +47,40 @@ class WebAppController extends Controller
     {
         if (env("IS_FULL_MIRROR")) {
             // a full mirror shows only GpsPosition-related apps
-            // TODO
+            $lat = Input::get('lat');
+            $lng = Input::get('lng');
+            $dep_locs = \DB::select('
+            SELECT
+                *, @distance_in_m AS distance_in_m from web_app_deployment_locations
+            WHERE
+                (
+                    @distance_in_m := (
+                        111111 * DEGREES(
+                            ACOS(
+                                COS(
+                                    RADIANS(
+                                        web_app_deployment_locations.latitude
+                                    )
+                                ) * COS(RADIANS(?)) * COS(
+                                    RADIANS(
+                                        web_app_deployment_locations.longitude - ?
+                                    )
+                                ) + SIN(
+                                    RADIANS(
+                                        web_app_deployment_locations.latitude
+                                    )
+                                ) * SIN(RADIANS(?))
+                            )
+                        )
+                    )
+                ) <= radius_m order by @distance_in_m asc;
+            ', [$lat, $lng, $lat]);
+            //TODO: short-circuit where
+            $apps = WebApp::whereIn('id', collect($dep_locs)->pluck('web_app_id'))->get();
+            foreach ($apps as $app) {
+                $app->latest_version = $app->getLatestVersion();
+            }
+            return $apps;
         } else {
             // a partial in-NAT mirror shows only pinned apps
             $pinned_apps = PinnedWebApp::leftJoin('web_apps', 'web_apps.id', '=', 'web_app_id')->orderBy('pinned_web_apps.priority', 'desc')->get(['web_apps.*']);
