@@ -27,7 +27,7 @@ class SyncController extends Controller
         $tables_to_sync = ['web_app_dependencies', 'web_app_deployment_locations', 'web_app_has_web_app_dependencies', 'web_app_versions', 'web_apps'];
         $records = [];
         foreach ($tables_to_sync as $table_to_sync) {
-            $records[$table_to_sync] = \DB::table($table_to_sync)->where('updated_at', '>', $last_sync_ts)
+            $records[$table_to_sync] = \DB::table($table_to_sync)->where(\DB::raw('UNIX_TIMESTAMP(updated_at)'), '>', $last_sync_ts / 1000)
                 ->skip($batch_number * $items_per_batch)
                 ->take($items_per_batch)
                 ->get();
