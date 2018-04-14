@@ -18,7 +18,7 @@ class CreateWebAppVersionsTable extends Migration
             $table->integer('web_app_id');
             $table->text('version');
             $table->text('logo_url');
-            $table->text('code_bundle_url');
+            $table->text('code_bundle_hash');
             $table->timestamps();
         });
     }

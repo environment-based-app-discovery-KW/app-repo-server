@@ -18,7 +18,7 @@ class CreateWebAppDependenciesTable extends Migration
             $table->text('dependency_name');
             $table->text('dependency_version');
             $table->text('dependency_name_version');
-            $table->text('code_bundle_url');
+            $table->text('code_bundle_hash');
             $table->timestamps();
         });
     }
