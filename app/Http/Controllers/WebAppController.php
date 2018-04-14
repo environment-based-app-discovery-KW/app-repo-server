@@ -22,6 +22,9 @@ class WebAppController extends Controller
     {
         $page = Input::get('page', 0);
         $webapps = WebApp::query()->skip($page * 10)->take(10)->get();
+        foreach ($webapps as $webapp) {
+            $webapp->latest_version = $webapp->getLatestVersion();
+        }
         return $webapps;
     }
 
@@ -32,7 +35,7 @@ class WebAppController extends Controller
         if (!$webapp) {
             return error('invalid id');
         }
-        $app_version = WebAppVersion::whereWebAppId($webapp->id)->orderBy('id', 'desc')->first();
+        $app_version = $webapp->getLatestVersion();
         $webapp->deps = WebAppDependency
             ::whereIn('id', WebAppHasWebAppDependency::whereWebAppVersionId($app_version->id)
                 ->pluck('web_app_dependency_id'))->get(['dependency_name_version as name', 'code_bundle_url']);
@@ -47,6 +50,9 @@ class WebAppController extends Controller
         } else {
             // a partial in-NAT mirror shows only pinned apps
             $pinned_apps = PinnedWebApp::leftJoin('web_apps', 'web_apps.id', '=', 'web_app_id')->orderBy('pinned_web_apps.priority', 'desc')->get(['web_apps.*']);
+            foreach ($pinned_apps as $webapp) {
+                $webapp->latest_version = WebApp::getLatestVersionForWebApp($webapp->id);
+            }
             return $pinned_apps;
         }
     }

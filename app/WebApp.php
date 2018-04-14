@@ -23,5 +23,11 @@ use Illuminate\Database\Eloquent\Model;
  */
 class WebApp extends Model
 {
-    //
+    public function getLatestVersion(){
+        return WebAppVersion::whereWebAppId($this->id)->orderBy('id', 'desc')->first();
+    }
+
+    public static function getLatestVersionForWebApp($id){
+        return WebAppVersion::whereWebAppId($id)->orderBy('id', 'desc')->first();
+    }
 }
