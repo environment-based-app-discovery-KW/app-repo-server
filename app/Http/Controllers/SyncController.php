@@ -24,10 +24,10 @@ class SyncController extends Controller
         $items_per_batch = 1000;
         $last_sync_ts = Input::get('last_sync_ts', 0);
         $batch_number = Input::get('batch_number', 0);
-        $dbs_to_sync = ['web_app_dependencies', 'web_app_deployment_locations', 'web_app_has_web_app_dependencies', 'web_app_versions', 'web_apps'];
+        $tables_to_sync = ['web_app_dependencies', 'web_app_deployment_locations', 'web_app_has_web_app_dependencies', 'web_app_versions', 'web_apps'];
         $records = [];
-        foreach ($dbs_to_sync as $db_to_sync) {
-            $records[$db_to_sync] = \DB::table($db_to_sync)->where('updated_at', '>', $last_sync_ts)
+        foreach ($tables_to_sync as $table_to_sync) {
+            $records[$table_to_sync] = \DB::table($table_to_sync)->where('updated_at', '>', $last_sync_ts)
                 ->skip($batch_number * $items_per_batch)
                 ->take($items_per_batch)
                 ->get();
