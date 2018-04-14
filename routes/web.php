@@ -24,3 +24,7 @@ Route::group(['prefix' => 'app'], function () {
 Route::group(['prefix' => 'sync'], function () {
     Route::any('/', 'SyncController@index');
 });
+
+Route::group(['prefix' => 'file'], function () {
+    Route::any('/download', 'FileController@download');
+});
