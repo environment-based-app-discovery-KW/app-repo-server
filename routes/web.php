@@ -20,3 +20,7 @@ Route::group(['prefix' => 'app'], function () {
     Route::any('discover', 'WebAppController@discover');
     Route::any('download', 'WebAppController@download');
 });
+
+Route::group(['prefix' => 'sync'], function () {
+    Route::any('/', 'SyncController@index');
+});
