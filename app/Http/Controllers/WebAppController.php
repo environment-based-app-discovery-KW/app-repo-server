@@ -40,6 +40,7 @@ class WebAppController extends Controller
         $webapp->deps = WebAppDependency
             ::whereIn('id', WebAppHasWebAppDependency::whereWebAppVersionId($app_version->id)
                 ->pluck('web_app_dependency_id'))->get(['dependency_name_version as name', 'code_bundle_hash']);
+        $webapp->latestVersion = $app_version;
         return $webapp;
     }
 
