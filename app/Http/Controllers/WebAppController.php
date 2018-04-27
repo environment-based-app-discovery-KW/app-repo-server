@@ -77,9 +77,16 @@ class WebAppController extends Controller
                 ) <= radius_m order by @distance_in_m asc;
             ', [$lat, $lng, $lat]);
             //TODO: short-circuit where
+
+            $mapWebAppIdToDistanceInM = [];
+            foreach ($dep_locs as $dep_loc) {
+                $mapWebAppIdToDistanceInM[$dep_loc->web_app_id] = $dep_loc->distance_in_m;
+            }
+
             $apps = WebApp::whereIn('id', collect($dep_locs)->pluck('web_app_id'))->get();
             foreach ($apps as $app) {
                 $app->latest_version = $app->getLatestVersion();
+                $app->distance_in_m = $mapWebAppIdToDistanceInM[$app->id];
             }
             return $apps;
         } else {
