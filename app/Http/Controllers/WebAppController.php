@@ -86,6 +86,9 @@ class WebAppController extends Controller
             $apps = WebApp::whereIn('id', collect($dep_locs)->pluck('web_app_id'))->get();
             foreach ($apps as $app) {
                 $app->latest_version = $app->getLatestVersion();
+                $app->deps = WebAppDependency
+                    ::whereIn('id', WebAppHasWebAppDependency::whereWebAppVersionId($app->latest_version->id)
+                        ->pluck('web_app_dependency_id'))->get(['dependency_name_version as name', 'code_bundle_hash']);
                 $app->distance_in_m = $mapWebAppIdToDistanceInM[$app->id];
             }
             return $apps;
