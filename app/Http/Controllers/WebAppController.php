@@ -46,9 +46,13 @@ class WebAppController extends Controller
 
     public function lanDiscover()
     {
-        $pinned_apps = PinnedWebApp::leftJoin('web_apps', 'web_apps.id', '=', 'web_app_id')->orderBy('pinned_web_apps.priority', 'desc')->get(['web_apps.*']);
+        $pinned_apps = PinnedWebApp::leftJoin('web_apps', 'web_apps.id', '=', 'web_app_id')->orderBy('pinned_web_apps.priority', 'desc')->get(['web_apps.*', 'launch_params_json']);
         foreach ($pinned_apps as $webapp) {
             $webapp->latest_version = WebApp::getLatestVersionForWebApp($webapp->id);
+            $webapp->distance_in_m = -1;
+            $webapp->deps = WebAppDependency
+                ::whereIn('id', WebAppHasWebAppDependency::whereWebAppVersionId($webapp->latest_version->id)
+                    ->pluck('web_app_dependency_id'))->get(['dependency_name_version as name', 'code_bundle_hash']);
         }
         return $pinned_apps;
     }
