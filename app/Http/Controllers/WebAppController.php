@@ -79,8 +79,10 @@ class WebAppController extends Controller
             //TODO: short-circuit where
 
             $mapWebAppIdToDistanceInM = [];
+            $mapWebAppIdToLaunchParams = [];
             foreach ($dep_locs as $dep_loc) {
                 $mapWebAppIdToDistanceInM[$dep_loc->web_app_id] = $dep_loc->distance_in_m;
+                $mapWebAppIdToLaunchParams[$dep_loc->web_app_id] = $dep_loc->launch_params_json;
             }
 
             $apps = WebApp::whereIn('id', collect($dep_locs)->pluck('web_app_id'))->get();
@@ -90,6 +92,7 @@ class WebAppController extends Controller
                     ::whereIn('id', WebAppHasWebAppDependency::whereWebAppVersionId($app->latest_version->id)
                         ->pluck('web_app_dependency_id'))->get(['dependency_name_version as name', 'code_bundle_hash']);
                 $app->distance_in_m = $mapWebAppIdToDistanceInM[$app->id];
+                $app->launch_params_json = $mapWebAppIdToLaunchParams[$app->id];
             }
             return $apps;
         } else {
