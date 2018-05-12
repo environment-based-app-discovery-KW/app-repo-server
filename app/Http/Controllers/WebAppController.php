@@ -44,13 +44,20 @@ class WebAppController extends Controller
         return $webapp;
     }
 
+    public function lanDiscover()
+    {
+        $pinned_apps = PinnedWebApp::leftJoin('web_apps', 'web_apps.id', '=', 'web_app_id')->orderBy('pinned_web_apps.priority', 'desc')->get(['web_apps.*']);
+        foreach ($pinned_apps as $webapp) {
+            $webapp->latest_version = WebApp::getLatestVersionForWebApp($webapp->id);
+        }
+        return $pinned_apps;
+    }
+
     public function discover()
     {
-        if (env("IS_FULL_MIRROR")) {
-            // a full mirror shows only GpsPosition-related apps
-            $lat = Input::get('lat');
-            $lng = Input::get('lng');
-            $dep_locs = \DB::select('
+        $lat = Input::get('lat');
+        $lng = Input::get('lng');
+        $dep_locs = \DB::select('
             SELECT
                 *, @distance_in_m AS distance_in_m from web_app_deployment_locations
             WHERE
@@ -76,32 +83,24 @@ class WebAppController extends Controller
                     )
                 ) <= radius_m order by @distance_in_m asc;
             ', [$lat, $lng, $lat]);
-            //TODO: short-circuit where
+        //TODO: short-circuit where
 
-            $mapWebAppIdToDistanceInM = [];
-            $mapWebAppIdToLaunchParams = [];
-            foreach ($dep_locs as $dep_loc) {
-                $mapWebAppIdToDistanceInM[$dep_loc->web_app_id] = $dep_loc->distance_in_m;
-                $mapWebAppIdToLaunchParams[$dep_loc->web_app_id] = $dep_loc->launch_params_json;
-            }
-
-            $apps = WebApp::whereIn('id', collect($dep_locs)->pluck('web_app_id'))->get();
-            foreach ($apps as $app) {
-                $app->latest_version = $app->getLatestVersion();
-                $app->deps = WebAppDependency
-                    ::whereIn('id', WebAppHasWebAppDependency::whereWebAppVersionId($app->latest_version->id)
-                        ->pluck('web_app_dependency_id'))->get(['dependency_name_version as name', 'code_bundle_hash']);
-                $app->distance_in_m = $mapWebAppIdToDistanceInM[$app->id];
-                $app->launch_params_json = $mapWebAppIdToLaunchParams[$app->id];
-            }
-            return $apps;
-        } else {
-            // a partial in-NAT mirror shows only pinned apps
-            $pinned_apps = PinnedWebApp::leftJoin('web_apps', 'web_apps.id', '=', 'web_app_id')->orderBy('pinned_web_apps.priority', 'desc')->get(['web_apps.*']);
-            foreach ($pinned_apps as $webapp) {
-                $webapp->latest_version = WebApp::getLatestVersionForWebApp($webapp->id);
-            }
-            return $pinned_apps;
+        $mapWebAppIdToDistanceInM = [];
+        $mapWebAppIdToLaunchParams = [];
+        foreach ($dep_locs as $dep_loc) {
+            $mapWebAppIdToDistanceInM[$dep_loc->web_app_id] = $dep_loc->distance_in_m;
+            $mapWebAppIdToLaunchParams[$dep_loc->web_app_id] = $dep_loc->launch_params_json;
         }
+
+        $apps = WebApp::whereIn('id', collect($dep_locs)->pluck('web_app_id'))->get();
+        foreach ($apps as $app) {
+            $app->latest_version = $app->getLatestVersion();
+            $app->deps = WebAppDependency
+                ::whereIn('id', WebAppHasWebAppDependency::whereWebAppVersionId($app->latest_version->id)
+                    ->pluck('web_app_dependency_id'))->get(['dependency_name_version as name', 'code_bundle_hash']);
+            $app->distance_in_m = $mapWebAppIdToDistanceInM[$app->id];
+            $app->launch_params_json = $mapWebAppIdToLaunchParams[$app->id];
+        }
+        return $apps;
     }
 }
