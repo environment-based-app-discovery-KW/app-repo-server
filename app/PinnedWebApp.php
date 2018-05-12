@@ -18,6 +18,8 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\PinnedWebApp whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\PinnedWebApp whereWebAppId($value)
  * @mixin \Eloquent
+ * @property string $launch_params_json
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\PinnedWebApp whereLaunchParamsJson($value)
  */
 class PinnedWebApp extends Model
 {
