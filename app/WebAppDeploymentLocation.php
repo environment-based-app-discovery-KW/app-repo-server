@@ -24,6 +24,8 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\WebAppDeploymentLocation whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\WebAppDeploymentLocation whereWebAppId($value)
  * @mixin \Eloquent
+ * @property string $display_name
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\WebAppDeploymentLocation whereDisplayName($value)
  */
 class WebAppDeploymentLocation extends Model
 {

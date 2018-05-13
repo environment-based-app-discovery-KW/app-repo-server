@@ -46,7 +46,7 @@ class WebAppController extends Controller
 
     public function lanDiscover()
     {
-        $pinned_apps = PinnedWebApp::leftJoin('web_apps', 'web_apps.id', '=', 'web_app_id')->orderBy('pinned_web_apps.priority', 'desc')->get(['web_apps.*', 'launch_params_json']);
+        $pinned_apps = PinnedWebApp::leftJoin('web_apps', 'web_apps.id', '=', 'web_app_id')->orderBy('pinned_web_apps.priority', 'desc')->get(['web_apps.*', 'launch_params_json', 'display_name']);
         foreach ($pinned_apps as $webapp) {
             $webapp->latest_version = WebApp::getLatestVersionForWebApp($webapp->id);
             $webapp->distance_in_m = -1;
@@ -91,9 +91,11 @@ class WebAppController extends Controller
 
         $mapWebAppIdToDistanceInM = [];
         $mapWebAppIdToLaunchParams = [];
+        $mapWebAppIdToDisplayName = [];
         foreach ($dep_locs as $dep_loc) {
             $mapWebAppIdToDistanceInM[$dep_loc->web_app_id] = $dep_loc->distance_in_m;
             $mapWebAppIdToLaunchParams[$dep_loc->web_app_id] = $dep_loc->launch_params_json;
+            $mapWebAppIdToDisplayName[$dep_loc->web_app_id] = $dep_loc->display_name;
         }
 
         $apps = WebApp::whereIn('id', collect($dep_locs)->pluck('web_app_id'))->get();
@@ -104,6 +106,7 @@ class WebAppController extends Controller
                     ->pluck('web_app_dependency_id'))->get(['dependency_name_version as name', 'code_bundle_hash']);
             $app->distance_in_m = $mapWebAppIdToDistanceInM[$app->id];
             $app->launch_params_json = $mapWebAppIdToLaunchParams[$app->id];
+            $app->display_name = $mapWebAppIdToDisplayName[$app->id];
         }
         return $apps;
     }

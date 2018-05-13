@@ -20,6 +20,8 @@ use Illuminate\Database\Eloquent\Model;
  * @mixin \Eloquent
  * @property string $launch_params_json
  * @method static \Illuminate\Database\Eloquent\Builder|\App\PinnedWebApp whereLaunchParamsJson($value)
+ * @property string $display_name
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\PinnedWebApp whereDisplayName($value)
  */
 class PinnedWebApp extends Model
 {
