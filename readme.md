@@ -21,3 +21,8 @@ Route::group(['prefix' => 'file'], function () {
 });
 ```
 
+## Docker 部署方法
+```
+docker build -t app_repo_server_image .
+docker run -p 0.0.0.0:888:888 --name app_repo_server_container -t app_repo_server_image
+```
