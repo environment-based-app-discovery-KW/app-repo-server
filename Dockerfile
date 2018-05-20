@@ -32,7 +32,7 @@ RUN find /var/lib/mysql -type f -exec touch {} \; && service mysql start && mysq
 
 # install code
 COPY . /usr/local/src/app-repo-server-master
-COPY docker_files/server/.env /usr/local/src/app-repo-server-master
+COPY docker_files/server/dotenv /usr/local/src/app-repo-server-master
 WORKDIR /usr/local/src/app-repo-server-master
 RUN composer install
 RUN chmod -R 777 storage bootstrap
@@ -57,6 +57,11 @@ ADD docker_files/apache2/site.conf /etc/apache2/sites-enabled/000-default.conf
 
 # expose port
 EXPOSE 888
+
+# import init data
+ADD docker_files/database/init_data.sql /tmp/init_data.sql
+RUN find /var/lib/mysql -type f -exec touch {} \; && service mysql start && mysql -u root < init_data.sql
+ADD http://7xn0vy.dl1.z0.glb.clouddn.com/file-bucket-init-data-5.20.tar.gz /var/file-bucket
 
 # RUN services
 ADD docker_files/start.sh /usr/local/src/start.sh
