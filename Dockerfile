@@ -32,7 +32,7 @@ RUN find /var/lib/mysql -type f -exec touch {} \; && service mysql start && mysq
 
 # install code
 COPY . /usr/local/src/app-repo-server-master
-COPY docker_files/server/dotenv /usr/local/src/app-repo-server-master
+COPY docker_files/server/dotenv /usr/local/src/app-repo-server-master/.env
 WORKDIR /usr/local/src/app-repo-server-master
 RUN composer install
 RUN chmod -R 777 storage bootstrap
