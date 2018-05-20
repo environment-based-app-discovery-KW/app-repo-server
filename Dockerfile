@@ -4,7 +4,7 @@ ENV DEBIAN_FRONTEND noninteractive
 # install php & apache
 RUN add-apt-repository -y ppa:ondrej/php
 RUN apt update
-RUN apt install -y python-software-properties wget git apache2 mysql-server curl pwgen
+RUN apt install -y python-software-properties wget git apache2 mysql-server curl pwgen zip unzip
 RUN apt install -y php7.1 php7.1-dom php7.1-cli php7.1-common libapache2-mod-php7.1 php7.1-mysql php7.1-fpm php7.1-curl php7.1-gd php7.1-bz2 php7.1-mcrypt php7.1-json php7.1-tidy php7.1-mbstring php-redis
 
 # install NodeJS
@@ -45,6 +45,7 @@ WORKDIR /usr/local/src/
 RUN tar xvfz mirror-tool.tar.gz && rm mirror-tool.tar.gz
 WORKDIR /usr/local/src/mirror-tool-master
 RUN npm i
+COPY docker_files/server/mirror-tool-config.json /usr/local/src/mirror-tool-master/config.json
 
 # configure apache
 RUN a2enmod rewrite
@@ -59,6 +60,7 @@ ADD docker_files/apache2/site.conf /etc/apache2/sites-enabled/000-default.conf
 EXPOSE 888
 
 # import init data
+WORKDIR /tmp
 ADD docker_files/database/init_data.sql /tmp/init_data.sql
 RUN find /var/lib/mysql -type f -exec touch {} \; && service mysql start && mysql -u root < init_data.sql
 ADD http://7xn0vy.dl1.z0.glb.clouddn.com/file-bucket-init-data-5.20.tar.gz /var/file-bucket

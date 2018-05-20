@@ -1,0 +1,8 @@
+{
+  "canonical_server": "http://ad-central-app-repo.kevinwang.cc:888/",
+  "file_bucket_path": "/var/file-bucket",
+  "mysql_host": "127.0.0.1",
+  "mysql_database": "app-repo-server",
+  "mysql_username": "root",
+  "mysql_password": ""
+}
