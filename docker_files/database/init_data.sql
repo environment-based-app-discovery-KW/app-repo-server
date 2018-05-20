@@ -131,7 +131,7 @@ CREATE TABLE `web_app_deployment_locations` (
 -- Records of web_app_deployment_locations
 -- ----------------------------
 INSERT INTO `web_app_deployment_locations` VALUES ('3', '3', '31.267401', '121.522179', '200', '', null, null, '用户授权测试程序');
-INSERT INTO `web_app_deployment_locations` VALUES ('4', '4', '31.267401', '121.522129', '1000', '{\"carParkName\":\"AAA商场停车场\"}', '0000-00-00 00:00:00', '0000-00-00 00:00:00', 'AAA商场停车场');
+INSERT INTO `web_app_deployment_locations` VALUES ('4', '4', '31.267401', '121.522129', '1000', '{\"carParkName\":\"AAA商场停车场\"}', '2018-05-12 08:26:16', '2018-05-12 08:26:16', 'AAA商场停车场');
 INSERT INTO `web_app_deployment_locations` VALUES ('5', '5', '31.267431', '121.522179', '200', '', null, null, 'ABC快餐店点单');
 
 -- ----------------------------
