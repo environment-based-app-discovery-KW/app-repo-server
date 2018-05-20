@@ -46,6 +46,7 @@ RUN tar xvfz mirror-tool.tar.gz && rm mirror-tool.tar.gz
 WORKDIR /usr/local/src/mirror-tool-master
 RUN npm i
 COPY docker_files/server/mirror-tool-config.json /usr/local/src/mirror-tool-master/config.json
+RUN crontab -l | { cat; echo "* */6 * * * node /usr/local/src/mirror-tool-master/index.js"; } | crontab -
 
 # configure apache
 RUN a2enmod rewrite
