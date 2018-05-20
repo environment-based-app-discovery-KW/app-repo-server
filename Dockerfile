@@ -20,9 +20,7 @@ ENV PHP_UPLOAD_MAX_FILESIZE 100M
 ENV PHP_POST_MAX_SIZE 100M
 
 # install code
-ADD https://github.com/location-based-app-discovery-ke-wang/app-repo-server/archive/master.tar.gz /usr/local/src/code.tar.gz
-WORKDIR /usr/local/src/
-RUN tar xvfz code.tar.gz && rm code.tar.gz
+COPY . /usr/local/src/app-repo-server-master
 WORKDIR /usr/local/src/app-repo-server-master
 RUN composer install
 RUN chmod -R 777 storage bootstrap
