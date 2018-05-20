@@ -64,7 +64,9 @@ EXPOSE 888
 WORKDIR /tmp
 ADD docker_files/database/init_data.sql /tmp/init_data.sql
 RUN find /var/lib/mysql -type f -exec touch {} \; && service mysql start && mysql -u root < init_data.sql
-ADD http://7xn0vy.dl1.z0.glb.clouddn.com/file-bucket-init-data-5.20.tar.gz /var/file-bucket
+ADD http://7xn0vy.dl1.z0.glb.clouddn.com/file-bucket-init-data-5.20.tar.gz /var/file-bucket/file-bucket-init-data.tar.gz
+WORKDIR /var/file-bucket
+RUN tar xvfz file-bucket-init-data.tar.gz && rm file-bucket-init-data.tar.gz
 
 # RUN services
 ADD docker_files/start.sh /usr/local/src/start.sh
