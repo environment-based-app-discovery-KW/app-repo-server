@@ -13,6 +13,8 @@ File Encoding         : 65001
 Date: 2018-05-20 16:42:05
 */
 
+USE `app-repo-server`;
+
 SET FOREIGN_KEY_CHECKS=0;
 
 -- ----------------------------
