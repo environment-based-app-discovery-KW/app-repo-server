@@ -5,6 +5,10 @@ APP仓库服务器，分布式多地部署（可在NAT内部署），存储与�
 ## 路由
 
 ```php
+Route::any('/', function () {
+    return ['online' => true];
+});
+
 Route::group(['prefix' => 'app'], function () {
     Route::any('ls', 'WebAppController@ls');
     Route::any('discover', 'WebAppController@discover');
